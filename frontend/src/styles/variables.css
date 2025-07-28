@@ -1,0 +1,20 @@
+/* frontend/src/styles/variables.css */
+:root {
+    /* Base colors (can be used as fallbacks or for elements not tied to theme) */
+    --color-text-dark: #333;
+    --color-text-light: #E0E0E0; /* For dark backgrounds */
+
+    /* Neutrals */
+    --color-background-light: #F0F2F5; /* Light greyish blue */
+    --color-card-background-light: #FFFFFF;
+    --color-background-dark: #282C36;
+    --color-card-background-dark: #3A3F47;
+
+    /* Semantic base colors - you might map lightTheme.primary to this */
+    --color-pastel-blue: #B0E0E6;
+
+    /* Design system constants */
+    --border-radius-soft: 10px;
+    --color-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    --transition-speed: 0.3s ease-in-out;
+}
