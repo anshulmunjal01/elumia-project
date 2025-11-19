@@ -1,12 +1,16 @@
-// backend/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Import your User model
-const generateToken = require('../utils/generateToken'); // Import the token utility
+// const generateToken = require('../utils/generateToken'); // Not directly used in this updated file
+
+// NOTE: The traditional /api/users/register endpoint is commented out.
+// User registration is now handled by Firebase Authentication on the frontend,
+// followed by a call to /api/auth/register-profile to save the user's role in MongoDB.
 
 // @route   POST /api/users/register
-// @desc    Register a new user
+// @desc    Register a new user (This route is now redundant if Firebase is primary auth)
 // @access  Public
+/*
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -48,8 +52,10 @@ router.post('/register', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+*/
 
-// You can add other user-related routes here, e.g.,
-// router.get('/profile', protect, async (req, res) => { /* ... */ });
+// You can add other user-related routes here that operate on the User model,
+// e.g., updating user profile, fetching a list of professionals (if needed).
+// Make sure to use the 'protect' middleware for authenticated routes.
 
 module.exports = router;

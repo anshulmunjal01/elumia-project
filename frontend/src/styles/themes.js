@@ -1,15 +1,22 @@
-// frontend/src/styles/themes.js
 export const lightTheme = {
     // Backgrounds & Surfaces
     background: '#F0F2F5', // Light grey page background
     cardBackground: '#FFFFFF', // White for cards, boxes
     headerBackground: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white for header/footer
+    sidebarBackground: '#f8f8f8', // Added for UpliftmentToolsPage sidebar
+    sidebarItemHoverBg: '#e0e0e0', // Added for UpliftmentToolsPage sidebar item hover
+    sidebarItemActiveBg: '#e0e0e0', // Added for UpliftmentToolsPage sidebar item active
 
     // Text Colors
     text: '#333333', // Primary dark text
-    textLight: '#666666', // Lighter grey text for paragraphs
+    textLight: '#4A4A4A', // Lighter grey text for paragraphs (Adjusted for better visibility)
     headerText: '#333333', // Text color for header links/logo
     moodText: '#333333', // Text color for mood buttons (this was already good)
+    sidebarText: '#333', // Added for UpliftmentToolsPage sidebar
+    sidebarHeader: '#333', // Added for UpliftmentToolsPage sidebar header
+    sidebarItemText: '#333', // Added for UpliftmentToolsPage sidebar item text
+    sidebarItemHoverText: '#000', // Added for UpliftmentToolsPage sidebar item hover text
+    sidebarItemActiveText: '#000', // Added for UpliftmentToolsPage sidebar item active text
 
     // Primary Brand Colors (for gradients/accents)
     primaryAccent: '#6A82FB', // Blue
@@ -54,6 +61,14 @@ export const lightTheme = {
     moodSliderThumb: '#6A82FB', // Thumb color for range sliders
     footerText: '#333333', // Dark text for the footer in light mode
     footerBackground: '#F0F2F5', // Match main background or slightly different
+
+    // AI Chat Message Colors
+    userMessageBg: '#E0E0E0', // Light grey for user message bubbles
+    userMessageText: '#333333', // Dark text for user messages in light mode (FIX)
+    aiMessageBg: '#6A82FB', // Primary accent color for AI message bubbles
+    aiMessageText: '#FFFFFF', // White text for AI messages
+    userAvatarBg: '#666666', // A slightly darker grey for user avatar in light mode
+    aiAvatarBg: '#6A82FB', // Match AI message background for AI avatar
 };
 
 export const darkTheme = {
@@ -61,12 +76,20 @@ export const darkTheme = {
     background: '#2C3E50', // Dark blue page background
     cardBackground: '#34495E', // Slightly lighter dark blue for cards
     headerBackground: 'rgba(52, 73, 94, 0.8)', // Semi-transparent dark blue for header/footer
+    sidebarBackground: '#2C3E50', // Added for UpliftmentToolsPage sidebar
+    sidebarItemHoverBg: '#3D566E', // Added for UpliftmentToolsPage sidebar item hover
+    sidebarItemActiveBg: '#3D566E', // Added for UpliftmentToolsPage sidebar item active
 
     // Text Colors
     text: '#ECF0F1', // Light grey text
-    textLight: '#BDC3C7', // Lighter grey text
+    textLight: '#FFFFFF', // Lighter grey text (Changed to white for better visibility in dark mode)
     headerText: '#ECF0F1', // Text color for header links/logo
     moodText: '#ECF0F1', // Adjusted for dark mode: Mood button text should be light
+    sidebarText: '#ECF0F1', // Added for UpliftmentToolsPage sidebar
+    sidebarHeader: '#ECF0F1', // Added for UpliftmentToolsPage sidebar header
+    sidebarItemText: '#ECF0F1', // Added for UpliftmentToolsPage sidebar item text
+    sidebarItemHoverText: '#FFFFFF', // Added for UpliftmentToolsPage sidebar item hover text
+    sidebarItemActiveText: '#FFFFFF', // Added for UpliftmentToolsPage sidebar item active text
 
     // Primary Brand Colors (for gradients/accents)
     primaryAccent: '#7B68EE', // Medium Purple
@@ -111,4 +134,12 @@ export const darkTheme = {
     moodSliderThumb: '#7B68EE',
     footerText: '#ECF0F1', // Light text for the footer in dark mode
     footerBackground: '#2C3E50', // Match main background or slightly different
+
+    // AI Chat Message Colors
+    userMessageBg: '#7B68EE', // Primary accent color for user message bubbles
+    userMessageText: '#FFFFFF', // White text for user messages
+    aiMessageBg: '#3D566E', // Darker background for AI message bubbles
+    aiMessageText: '#ECF0F1', // Light text for AI messages
+    userAvatarBg: '#BDC3C7', // A lighter grey for user avatar in dark mode
+    aiAvatarBg: '#7B68EE', // Match AI message background for AI avatar
 };

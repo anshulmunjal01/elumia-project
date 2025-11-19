@@ -209,7 +209,7 @@ function Header({ className, toggleSettingsSidebar }) {
         <HeaderContainer className={className} theme={theme}>
             <Logo to="/" theme={theme}>
                 <img src="/images/elumialogo.png" alt="Elumia Logo" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/40x40/8A2BE2/FFFFFF?text=EL'; }} /> {/* Updated logo path */}
-                <span>Elumia</span>
+                <span>Lumira</span>
             </Logo>
             <Nav>
                 <NavLink to="/" end onClick={handleNavLinkClick}><FaHome /> Home</NavLink>

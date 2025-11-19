@@ -1,9 +1,22 @@
+// C:\Users\AA\Desktop\elumia-project\backend\routes\upliftmentRoutes.js
 const express = require('express');
 const router = express.Router();
-// const upliftmentController = require('../controllers/upliftmentController'); // Will link later
-// const { protect } = require('../middleware/authMiddleware'); // Will link later
+const upliftmentController = require('../controllers/upliftmentController');
+const { protect } = require('../middleware/authMiddleware'); // Assuming you have an auth middleware
 
-// Example route
-// router.get('/music', protect, upliftmentController.getMusicRecommendations);
+// --- Upliftment Tools API Endpoints ---
 
-module.exports = router; // <-- ADD THIS LINE
+// Get upliftment content based on mood (can be protected if needed)
+router.get('/content', upliftmentController.getUpliftmentContent);
+
+// Get more content for a specific type (e.g., for infinite scroll)
+router.get('/load-more', upliftmentController.loadMoreContent);
+
+// Get a random "Message from the Universe"
+router.get('/message', upliftmentController.getUniverseMessage);
+
+// Example protected route (uncomment and use protect middleware if authentication is required)
+// router.get('/music-recommendations', protect, upliftmentController.getMusicRecommendations);
+// router.get('/video-recommendations', protect, upliftmentController.getVideoRecommendations);
+
+module.exports = router;

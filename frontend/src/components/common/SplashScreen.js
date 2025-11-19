@@ -67,7 +67,7 @@ const SplashImage = styled.img`
 function SplashScreen() {
     return (
         <SplashScreenContainer>
-            <SplashTitle>Welcome to Elumia</SplashTitle>
+            <SplashTitle>Welcome to Lumira</SplashTitle>
             <SplashImage
                 src="/images/elumialogoextended.jpg" // Path to the extended logo
                 alt="Elumia Extended Logo"

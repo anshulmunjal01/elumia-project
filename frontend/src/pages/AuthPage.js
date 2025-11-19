@@ -1,23 +1,16 @@
-// frontend/src/pages/AuthPage.js
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
-
-// Import the initialized Firebase auth instance from your new firebase.js file
-import { auth } from '../firebase'; // Adjust path if firebase.js is in a different location
-
-// Firebase Auth methods
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth'; // Added signOut
-
-// Assuming React Router is used for navigation
-// import { useNavigate } from 'react-router-dom'; // Uncomment if you have react-router-dom installed
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 const AuthContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* Changed to 100vh to ensure it fills the viewport */
+    min-height: 100vh;
     padding: 20px;
     background-color: ${({ theme }) => theme.background};
     transition: background-color var(--transition-speed);
@@ -32,13 +25,13 @@ const AuthBox = styled.div`
     width: 100%;
     text-align: center;
     transition: background var(--transition-speed);
-    border: 1px solid ${({ theme }) => theme.journalBorder}; /* Added border for consistency */
+    border: 1px solid ${({ theme }) => theme.journalBorder};
 `;
 
 const Title = styled.h2`
     color: ${({ theme }) => theme.text};
     margin-bottom: 25px;
-    font-size: 2.2rem; /* Slightly larger title */
+    font-size: 2.2rem;
     transition: color var(--transition-speed);
 `;
 
@@ -60,29 +53,29 @@ const Input = styled.input`
 
     &:focus {
         outline: none;
-        border-color: ${({ theme }) => theme.primaryColor}; /* Changed focus border color */
-        box-shadow: 0 0 0 3px ${({ theme }) => theme.focusOutline}; /* Changed focus shadow */
+        border-color: ${({ theme }) => theme.primaryAccent}; /* Use primaryAccent for focus */
+        box-shadow: 0 0 0 3px ${({ theme }) => theme.focusOutline};
     }
     &::placeholder {
-        color: ${({ theme }) => theme.journalPlaceholder}; /* Consistent placeholder color */
+        color: ${({ theme }) => theme.journalPlaceholder};
     }
 `;
 
 const SubmitButton = styled.button`
-    background: ${({ theme }) => theme.primaryGradient}; /* Used primary gradient */
-    color: white; /* Changed text color to white for gradient */
+    background: ${({ theme }) => theme.primaryGradient};
+    color: white;
     padding: 12px 20px;
     border-radius: var(--border-radius-round);
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
     border: none;
-    box-shadow: ${({ theme }) => theme.shadowSmall}; /* Consistent shadow */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Simplified transition */
+    box-shadow: ${({ theme }) => theme.shadowSmall};
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Enhanced hover shadow */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
     &:active {
         transform: translateY(0);
@@ -98,7 +91,7 @@ const LogoutButton = styled(SubmitButton)`
     background: ${({ theme }) => theme.buttonSecondaryBg};
     color: ${({ theme }) => theme.buttonSecondaryText};
     border: 2px solid ${({ theme }) => theme.buttonSecondaryBorder};
-    margin-top: 20px; /* Add some space above the logout button */
+    margin-top: 20px;
     &:hover {
         background: ${({ theme }) => theme.buttonSecondaryBorder};
         color: white;
@@ -112,7 +105,7 @@ const ToggleText = styled.p`
     transition: color var(--transition-speed);
 
     span {
-        color: ${({ theme }) => theme.primaryColor}; /* Consistent primary color for links */
+        color: ${({ theme }) => theme.primaryAccent}; /* Changed to primaryAccent for consistency */
         cursor: pointer;
         font-weight: bold;
         &:hover {
@@ -127,7 +120,7 @@ const Message = styled.div`
     border-radius: var(--border-radius-soft);
     font-size: 0.95rem;
     color: white;
-    background-color: ${({ $type }) => ($type === 'error' ? '#FF6347' : '#4CAF50')}; /* Red for error, Green for success */
+    background-color: ${({ $type }) => ($type === 'error' ? '#FF6347' : '#4CAF50')};
     opacity: ${({ $show }) => ($show ? 1 : 0)};
     transition: opacity 0.3s ease-in-out;
 `;
@@ -138,41 +131,34 @@ function AuthPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [message, setMessage] = useState({ text: '', type: '' }); // For success/error messages
-    const [user, setUser] = useState(null); // State to hold the authenticated user
+    // userType and otherUserType states removed as per request
+    const [message, setMessage] = useState({ text: '', type: '' });
+    const [user, setUser] = useState(null);
     const { theme } = useTheme();
+    const navigate = useNavigate(); // Initialize useNavigate
 
-    // const navigate = useNavigate(); // Uncomment if you have react-router-dom installed
-
-    // Monitor auth state changes (for redirection or UI updates)
+    // Monitor auth state changes
     useEffect(() => {
-        // Ensure auth is initialized before setting up listener
         if (!auth) {
             setMessage({ text: "Firebase authentication not available. Please check setup.", type: "error" });
             return;
         }
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser); // Update user state
+            setUser(currentUser);
             if (currentUser) {
-                // User is signed in.
                 console.log("User authenticated:", currentUser.uid);
-                setMessage({ text: `Welcome, ${currentUser.email || 'user'}!`, type: "success" });
-                // In a real app, you would redirect here:
-                // navigate('/mood-journal'); // Uncomment and adjust path as needed
             } else {
-                // User is signed out.
                 console.log("User signed out or not yet authenticated.");
-                setMessage({ text: "", type: "" }); // Clear messages on logout
+                setMessage({ text: "", type: "" }); // Clear message on logout
             }
         });
-        return () => unsubscribe(); // Clean up subscription
-    }, []); // Empty dependency array means this runs once on mount
+        return () => unsubscribe();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage({ text: '', type: '' }); // Clear previous messages
 
-        // Check if auth is available before attempting operations
         if (!auth) {
             setMessage({ text: "Firebase authentication not initialized. Cannot proceed.", type: "error" });
             return;
@@ -180,45 +166,78 @@ function AuthPage() {
 
         try {
             if (isLogin) {
+                // Firebase Login
                 await signInWithEmailAndPassword(auth, email, password);
                 setMessage({ text: "Login successful!", type: "success" });
             } else {
+                // Registration Logic
                 if (password !== confirmPassword) {
                     setMessage({ text: "Passwords do not match!", type: "error" });
                     return;
                 }
-                await createUserWithEmailAndPassword(auth, email, password);
-                setMessage({ text: "Registration successful!", type: "success" });
+
+                // 1. Register with Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const firebaseUser = userCredential.user;
+                const firebaseUid = firebaseUser.uid;
+
+                // 2. Send Firebase UID and email to your backend to save in MongoDB
+                // userType and otherUserType are no longer sent from frontend
+                const idToken = await firebaseUser.getIdToken();
+                const backendResponse = await fetch('http://localhost:5000/api/auth/register-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
+                    },
+                    body: JSON.stringify({
+                        firebaseUid: firebaseUid,
+                        email: email,
+                        // userType and otherUserType are now handled by backend default
+                    }),
+                });
+
+                if (!backendResponse.ok) {
+                    const errorData = await backendResponse.json();
+                    throw new Error(errorData.msg || 'Failed to save user profile to backend.');
+                }
+
+                setMessage({ text: "Registration successful! Welcome to Elumia.", type: "success" });
+                // Clear form fields after successful operation
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
             }
-            // Clear form fields after successful operation
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
         } catch (error) {
             console.error("Authentication error:", error);
             let errorMessage = "An unknown error occurred.";
-            switch (error.code) {
-                case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address format.';
-                    break;
-                case 'auth/user-disabled':
-                    errorMessage = 'This user account has been disabled.';
-                    break;
-                case 'auth/user-not-found':
-                    errorMessage = 'No user found with this email.';
-                    break;
-                case 'auth/wrong-password':
-                    errorMessage = 'Incorrect password.';
-                    break;
-                case 'auth/email-already-in-use':
-                    errorMessage = 'This email is already registered.';
-                    break;
-                case 'auth/weak-password':
-                    errorMessage = 'Password should be at least 6 characters.';
-                    break;
-                default:
-                    errorMessage = error.message;
-                    break;
+
+            if (error.code && error.code.startsWith('auth/')) {
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This user account has been disabled.';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = 'No user found with this email.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password.';
+                        break;
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'This email is already registered with Firebase.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password should be at least 6 characters.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                        break;
+                }
+            } else {
+                errorMessage = error.message;
             }
             setMessage({ text: errorMessage, type: "error" });
         }
@@ -228,8 +247,7 @@ function AuthPage() {
         try {
             await signOut(auth);
             setMessage({ text: "Logged out successfully!", type: "success" });
-            // Optionally redirect after logout
-            // navigate('/'); // Redirect to home or login page
+            navigate('/'); // Redirect to home after logout
         } catch (error) {
             console.error("Logout error:", error);
             setMessage({ text: "Failed to log out. Please try again.", type: "error" });
@@ -261,15 +279,18 @@ function AuthPage() {
                             required
                             theme={theme}
                         />
-                        {!isLogin && (
-                            <Input
-                                type="password"
-                                placeholder="Confirm Password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                                theme={theme}
-                            />
+                        {!isLogin && ( // This block is only visible during registration
+                            <>
+                                <Input
+                                    type="password"
+                                    placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                    theme={theme}
+                                />
+                                {/* User type selection removed */}
+                            </>
                         )}
                         <SubmitButton type="submit" theme={theme}>
                             {isLogin ? 'Login' : 'Register'}
@@ -278,14 +299,14 @@ function AuthPage() {
                 ) : ( // Show user info and logout button if user is authenticated
                     <>
                         <p style={{ color: theme.text, fontSize: '1.1rem', marginBottom: '20px' }}>
-                            You are logged in as <span style={{ fontWeight: 'bold', color: theme.primaryColor }}>{user.email}</span>.
+                            You are logged in as <span style={{ fontWeight: 'bold', color: theme.primaryAccent }}>{user.email}</span>.
                         </p>
                         <LogoutButton onClick={handleLogout} theme={theme}>
                             Logout
                         </LogoutButton>
                     </>
                 )}
-                
+
                 {!user && ( // Only show toggle text if no user is authenticated
                     <ToggleText theme={theme}>
                         {isLogin ? "Don't have an account? " : "Already have an account? "}

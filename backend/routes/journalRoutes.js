@@ -1,15 +1,15 @@
-// backend/routes/journalRoutes.js
+// C:\Users\AA\Desktop\elumia-project\backend\routes\journalRoutes.js
 const express = require('express');
 const router = express.Router();
 const JournalEntry = require('../models/JournalEntry'); // Import your JournalEntry model
-const authMiddleware = require('../middleware/authMiddleware'); // Assuming this path is correct for your auth middleware
+const { protect } = require('../middleware/authMiddleware'); // FIX: Destructure 'protect' from the import
 
 // --- Journal Entry Endpoints ---
 
 // @route   GET /api/journal
 // @desc    Get all journal entries for the authenticated user
 // @access  Private
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', protect, async (req, res) => { // Use 'protect' directly
     try {
         // Find entries for the authenticated user, sorted by most recent date
         const entries = await JournalEntry.find({ userId: req.user.id }).sort({ createdAt: -1 });
@@ -23,7 +23,7 @@ router.get('/', authMiddleware, async (req, res) => {
 // @route   POST /api/journal
 // @desc    Create a new journal entry
 // @access  Private
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', protect, async (req, res) => { // Use 'protect' directly
     // Destructure content, mood, tags, and drawing from the request body
     const { content, mood, tags, drawing } = req.body;
 
@@ -53,7 +53,7 @@ router.post('/', authMiddleware, async (req, res) => {
 // @route   PUT /api/journal/:id
 // @desc    Update a journal entry
 // @access  Private
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', protect, async (req, res) => { // Use 'protect' directly
     const { content, mood, tags, drawing } = req.body; // Get updated fields from body
 
     try {
@@ -85,7 +85,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 // @route   DELETE /api/journal/:id
 // @desc    Delete a journal entry
 // @access  Private
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', protect, async (req, res) => { // Use 'protect' directly
     try {
         let entry = await JournalEntry.findById(req.params.id);
 

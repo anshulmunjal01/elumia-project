@@ -524,10 +524,10 @@ function HomePage() {
                 <Tagline>Your AI Companion for Mind, Mood & Meaning</Tagline>
                 <MainTitle theme={theme}>
                     <img src="/images/elumialogo.png" alt="Elumia Logo" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/80x80/8A2BE2/FFFFFF?text=EL'; }} /> {/* Updated logo path */}
-                    Welcome to <span>Elumia</span>
+                    Welcome to <span>Lumira</span>
                 </MainTitle>
                 <Subtitle>
-                    Discover a safe space where you can be yourself. Elumia is your empathetic AI friend, therapist, motivator,
+                    Discover a safe space where you can be yourself. Lumira is your empathetic AI friend, therapist, motivator,
                     and mood journal, all designed to support your well-being.
                 </Subtitle>
                 <ButtonGroup>

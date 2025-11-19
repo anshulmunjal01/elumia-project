@@ -25,7 +25,7 @@ function Footer({ className }) {
     return (
         // IMPORTANT CHANGE: Apply className prop
         <FooterContainer className={className} theme={theme}>
-            &copy; {new Date().getFullYear()} Elumia. All rights reserved. | Built with ❤️ for your well-being.
+            &copy; {new Date().getFullYear()} Lumira. All rights reserved. | Built with ❤️ for your well-being.
         </FooterContainer>
     );
 }
