@@ -1,41 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Import your User model
-const { protect } = require('../middleware/authMiddleware'); // Import the updated Firebase protect middleware
-
-// NOTE: The traditional /api/auth/login endpoint is removed as Firebase handles login directly.
-// The frontend will use Firebase's signInWithEmailAndPassword and then fetch user details via /api/auth/me.
+// The protect middleware is crucial: it verifies the Firebase ID token and fetches the MongoDB user profile.
+const { protect } = require('../middleware/authMiddleware'); 
 
 // @route   POST /api/auth/register-profile
-// @desc    Register user profile in MongoDB after Firebase authentication
+// @desc    Create user profile in MongoDB after successful Firebase Sign-Up (or Sign-In).
 // @access  Private (requires Firebase ID token)
+// NOTE: This endpoint is called from the frontend *after* Firebase creates the user.
 router.post('/register-profile', protect, async (req, res) => {
     // req.firebaseUid is set by the 'protect' middleware after verifying Firebase ID token
-    const { email } = req.body; // userType and otherUserType are no longer expected from frontend
+    const { email } = req.body;
     const firebaseUid = req.firebaseUid; // Get Firebase UID from middleware
 
+    // The 'protect' middleware ensures we have a valid firebaseUid
     if (!firebaseUid || !email) {
+        // This should theoretically not happen if the frontend sends the token and email correctly
         return res.status(400).json({ msg: 'Missing required fields: firebaseUid, email' });
     }
 
     try {
-        // Check if a user profile already exists for this Firebase UID
+        // 1. Check if a user profile already exists for this Firebase UID
+        // The protect middleware already checks this, but we'll re-check and use it
         let userProfile = await User.findOne({ firebaseUid });
+        
         if (userProfile) {
-            // If a profile exists, check if it's the same email or if an update is needed
-            // The userType will now be defaulted by the User model if not present, or remain as is.
-            if (userProfile.email === email) {
-                 return res.status(200).json({ msg: 'User profile already exists and is up-to-date.', userProfile });
-            } else {
-                // If profile exists but email is different, update it
+            // User profile already exists. Check if email needs an update (e.g., if user changed it in Firebase).
+            if (userProfile.email !== email) {
                 userProfile.email = email;
                 await userProfile.save();
-                return res.status(200).json({ msg: 'User profile updated successfully.', userProfile });
+                return res.status(200).json({ msg: 'User profile email updated successfully.', userProfile });
             }
+            // Profile exists and is up-to-date
+            return res.status(200).json({ msg: 'User profile already exists.', userProfile });
         }
 
-        // Create a new user profile in MongoDB
-        // userType will be 'patient' by default as per User model schema
+        // 2. Create a new user profile in MongoDB
+        // We can optionally fetch the username from Firebase here if needed, 
+        // but defaulting from email is fine if the client doesn't send it.
         userProfile = new User({
             firebaseUid,
             email,
@@ -54,22 +56,14 @@ router.post('/register-profile', protect, async (req, res) => {
 
     } catch (err) {
         console.error('Error registering user profile:', err.message);
-        // Handle duplicate email error specifically if email is also unique in MongoDB
-        if (err.code === 11000 && err.keyPattern && err.keyPattern.email) {
-            return res.status(400).json({ msg: 'A user with this email already has a profile.' });
+        // Handle common MongoDB error (e.g., if you enforce unique email on the User model)
+        if (err.code === 11000) { 
+            return res.status(400).json({ msg: 'A MongoDB profile already exists for this unique field (e.g., email).' });
         }
         res.status(500).send('Server Error during profile registration');
     }
 });
 
-// @route   POST /api/auth/login
-// @desc    Login user (Firebase handles authentication, this route might be for session management or just a placeholder)
-// @access  Public
-// Note: Similar to /register, Firebase login happens on the frontend.
-// This route could be used for creating a session token on the backend if not using Firebase ID tokens directly for every request.
-router.post('/login', async (req, res) => {
-    res.status(200).json({ msg: 'Firebase login handled on frontend.' });
-});
 
 // @route   GET /api/auth/me
 // @desc    Get authenticated user's profile from MongoDB
@@ -80,10 +74,11 @@ router.get('/me', protect, async (req, res) => {
         const user = req.user;
 
         if (!user) {
-            return res.status(404).json({ msg: 'User profile not found.' });
+            // This case handles a valid Firebase user who hasn't completed the /register-profile step yet.
+            return res.status(404).json({ msg: 'User profile not found in MongoDB. Please call /register-profile first.' });
         }
 
-        // Return the user profile including userType
+        // Return the user profile
         res.json({
             _id: user._id,
             firebaseUid: user.firebaseUid,
@@ -92,7 +87,7 @@ router.get('/me', protect, async (req, res) => {
             userType: user.userType,
             otherUserType: user.otherUserType,
             preferredLanguage: user.preferredLanguage,
-            // Add any other profile fields you want to return
+            // Only return necessary profile fields
         });
     } catch (err) {
         console.error('Error fetching user profile:', err.message);
@@ -100,6 +95,6 @@ router.get('/me', protect, async (req, res) => {
     }
 });
 
-// You can add other authentication-related routes here, e.g., password reset requests (handled by Firebase)
+// REMOVED: router.post('/login', ...) as Firebase handles login directly.
 
 module.exports = router;
